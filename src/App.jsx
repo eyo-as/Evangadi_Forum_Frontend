@@ -15,90 +15,90 @@ import Question from "./pages/Question/Question";
 export const AppState = createContext();
 
 function App() {
-	const [user, setUser] = useState(null);
-	const [loading, setLoading] = useState(true);
-	const token = localStorage.getItem("token");
-	const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const token = localStorage.getItem("token");
+  const navigate = useNavigate();
 
-	async function checkUser() {
-		if (!token) {
-			setLoading(false);
-			navigate("/login");
-			return;
-		}
+  async function checkUser() {
+    if (!token) {
+      setLoading(false);
+      navigate("/login");
+      return;
+    }
 
-		try {
-			const { data } = await axios.get("/users/check", {
-				headers: {
-					Authorization: "Bearer " + token,
-				},
-			});
-			setUser(data);
-		} catch (error) {
-			alert(
-				"Authentication error:",
-				error.response?.data?.msg || error.message
-			);
-			navigate("/login");
-		} finally {
-			setLoading(false);
-		}
-	}
+    try {
+      const { data } = await axios.get("/users/check", {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+      setUser(data);
+    } catch (error) {
+      alert(
+        "Authentication error:",
+        error.response?.data?.msg || error.message
+      );
+      navigate("/login");
+    } finally {
+      setLoading(false);
+    }
+  }
 
-	useEffect(() => {
-		checkUser();
-	}, []);
+  useEffect(() => {
+    checkUser();
+  }, []);
 
-	if (loading) {
-		return (
-			<Spinner animation="border" role="status">
-				<span className="sr-only">Loading...</span>
-			</Spinner>
-		);
-	}
+  if (loading) {
+    return (
+      <Spinner animation="border" role="status">
+        <span className="sr-only">Loading...</span>
+      </Spinner>
+    );
+  }
 
-	return (
-		<AppState.Provider value={{ user, setUser }}>
-			<Routes>
-				<Route path="/" element={<Landing />} />
-				<Route path="/login" element={<Login />} />
-				<Route path="/signup" element={<Signup />} />
-				<Route path="/forgot-password" element={<ForgotPassword />} />
-				<Route
-					path="/home"
-					element={
-						<ProtectedRoute>
-							<Home />
-						</ProtectedRoute>
-					}
-				/>
-				<Route
-					path="/questions/:question_id"
-					element={
-						<ProtectedRoute>
-							<Answer />
-						</ProtectedRoute>
-					}
-				/>
-				<Route
-					path="/questions"
-					element={
-						<ProtectedRoute>
-							<Question />
-						</ProtectedRoute>
-					}
-				/>
-				<Route
-					path="/acknowledgment"
-					element={
-						<ProtectedRoute>
-							<AcknowledgmentPage />
-						</ProtectedRoute>
-					}
-				/>
-			</Routes>
-		</AppState.Provider>
-	);
+  return (
+    <AppState.Provider value={{ user, setUser }}>
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route
+          path="/home"
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/questions/:question_id"
+          element={
+            <ProtectedRoute>
+              <Answer />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/questions"
+          element={
+            <ProtectedRoute>
+              <Question />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/acknowledgment"
+          element={
+            <ProtectedRoute>
+              <AcknowledgmentPage />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </AppState.Provider>
+  );
 }
 
 export default App;
